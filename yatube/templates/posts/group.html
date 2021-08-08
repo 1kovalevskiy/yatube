@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Записи сообщества {{ group.title }}{% endblock %}
+{% block header %}{{ group.title }}{% endblock %}
+{% block description %}{{ group.description }}{% endblock %}
+{% block content %}
+  {% for post in page %}
+  {% include 'posts/includes/post_card.html' %}
+  {% endfor %}
+  {% include "posts/includes/paginator.html" %}
+  
+{% endblock %} 

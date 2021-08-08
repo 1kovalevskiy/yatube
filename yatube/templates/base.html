@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block title %}The Last Social Media You'll Ever Need{% endblock %} | Yatube</title>
+    <!-- Загрузка статики -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'bootstrap/dist/css/bootstrap.min.css' %}">
+    <script src="{% static 'jquery/dist/jquery.min.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  </head>
+
+  <body>
+    {% include 'posts/includes/nav.html' %}
+    <main>
+      <div class="container">
+        <h1>{% block header %}The Last Social Media You'll Ever Need{% endblock %}</h1>
+        <p>{% block description %}
+          <!-- Описание страницы -->
+        {% endblock %}
+        </p>
+        <!-- Либо все писать в "content"
+        либо в "left-content" и "right-content" -->
+        {% block content %}
+          <div class="row">
+            <div class="col-12 col-md-3">
+                {% block left-content %}
+                {% endblock %} 
+            </div>
+            <div class="col-12 col-md-9">
+                {% block right-content %}
+                {% endblock %} 
+            </div>
+          </div> 
+        {% endblock %}
+          
+      </div>
+    </main>
+  {% include 'posts/includes/footer.html' %}
+  </body>
+
+</html> 

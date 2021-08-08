@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Список пользователей {% endblock %}
+{% block header %}Пользователи{% endblock %}
+{% block description %} {% endblock %}
+{% block content %}
+
+  {% for user in users %}
+    <h3>
+      <a href="/{{ user.username }}">{{ user.first_name }} {{ user.last_name }}</a>
+    </h3>
+
+  {% endfor %}
+  {% include "posts/includes/paginator.html" %}
+{% endblock %} 

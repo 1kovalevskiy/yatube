@@ -1,0 +1,13 @@
+<div class="container">
+  <div class="card">
+    <div class="card-header">
+      <h1><a href="{% url 'profile' user_post.username %}">@{{ user_post.username }}</a></h1>
+      <h3>{{ user_post.first_name }} {{ user_post.last_name }}</h3>
+    </div>
+    <div class="card-body">
+      Подписчиков: XXX <br>
+      Подписан: XXX <br>
+      Публикаций: {{ post_count }}
+    </div>
+  </div>
+</div>

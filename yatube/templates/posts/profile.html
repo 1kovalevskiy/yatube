@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Профиль {{ user_post.username }}{% endblock %}
+{% block header %}{% endblock %}
+{% block description %}{% endblock %}
+
+{% block left-content %}
+  {% include "posts/includes/author_card.html" %}
+{% endblock %} 
+
+{% block right-content %}
+  {% for post in page %}
+  {% include 'posts/includes/post_card.html' %}
+  {% endfor %}
+  {% include "posts/includes/paginator.html" %}
+  
+{% endblock %} 
