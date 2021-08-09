@@ -12,7 +12,7 @@ from django.core.cache import cache
 
 from time import sleep
 
-from posts.models import Group, Post
+from posts.models import Group, Post, Follow
 
 User = get_user_model()
 
@@ -39,6 +39,9 @@ class PostPageTests(TestCase):
             slug='test-group3'
         )
         cls.user = User.objects.create_user(username='TestUser')
+        cls.user2 = User.objects.create_user(username='TestUser2')
+        cls.user3 = User.objects.create_user(username='TestUser3')
+        cls.user4 = User.objects.create_user(username='TestUser4')
         cls.small_gif = (
             b'\x47\x49\x46\x38\x39\x61\x02\x00'
             b'\x01\x00\x80\x00\x00\x00\x00\x00'
@@ -63,11 +66,24 @@ class PostPageTests(TestCase):
             # пришлось ввести задержку, чтобы посты создавались в разное время
             # а то последним иногда был и 11, и 10 пост, вместо 12!
             sleep(0.005)
+
+        Follow.objects.create(
+            user=PostPageTests.user4,
+            author=PostPageTests.user
+        )
         cls.templates_page_names = {
             'posts/index.html': reverse('index'),
             'posts/new_post.html': reverse('new_post'),
             'posts/group.html': reverse('group_posts',
                                         args=[PostPageTests.group1.slug]),
+            'posts/follow.html': reverse('follow_index'),
+            'posts/add_comment.html': reverse(
+                'add_comment',
+                kwargs={
+                    'username': PostPageTests.user.username,
+                    'post_id': 1
+                }
+            )
         }
         cls.form_fields = {
             'text': forms.fields.CharField,
@@ -94,6 +110,12 @@ class PostPageTests(TestCase):
         # Создаём авторизованный клиент
         self.authorized_client = Client()
         self.authorized_client.force_login(PostPageTests.user)
+        self.authorized_client2 = Client()
+        self.authorized_client2.force_login(PostPageTests.user2)
+        self.authorized_client3 = Client()
+        self.authorized_client3.force_login(PostPageTests.user3)
+        self.authorized_client4 = Client()
+        self.authorized_client4.force_login(PostPageTests.user4)
 
     # Проверяем используемые шаблоны
     def test_pages_uses_correct_template(self):
@@ -220,3 +242,55 @@ class PostPageTests(TestCase):
         response = self.authorized_client.get('/')
         page = response.content.decode()
         self.assertIn('new-post-with-cache', page)
+
+    def test_follow_unfollow_system(self):
+        """Система подписок работает корректно"""
+        follow_count_before = Follow.objects.filter(
+            user=PostPageTests.user
+        ).count()
+        self.authorized_client.get(
+            reverse('profile_follow', args=[PostPageTests.user2.username])
+        )
+        follow_count_after = Follow.objects.filter(
+            user=PostPageTests.user
+        ).count()
+        self.assertEqual(follow_count_before + 1, follow_count_after)
+        self.authorized_client.get(
+            reverse('profile_unfollow', args=[PostPageTests.user2.username])
+        )
+        unfollow_count_after = Follow.objects.filter(
+            user=PostPageTests.user
+        ).count()
+        self.assertEqual(follow_count_before, unfollow_count_after)
+
+    def test_follow_page(self):
+        """Страница с подписками отображается корректно"""
+        self.authorized_client.get(
+            reverse('profile_follow', args=[PostPageTests.user3.username])
+        )
+        responce1 = self.authorized_client.get(
+            reverse('follow_index')
+        )
+        responce2 = self.authorized_client2.get(
+            reverse('follow_index')
+        )
+        post1_count_before = len(responce1.context['page'])
+        post2_count_before = len(responce2.context['page'])
+        Post.objects.create(
+            author = PostPageTests.user3,
+            text = 'text_user_3',
+        )
+        responce1 = self.authorized_client.get(
+            reverse('follow_index')
+        )
+        responce2 = self.authorized_client2.get(
+            reverse('follow_index')
+        )
+        post1_count_after = len(responce1.context['page'])
+        post2_count_after = len(responce2.context['page'])
+        self.assertEqual(post1_count_after, post1_count_before + 1)
+        self.assertEqual(post2_count_after, post2_count_before)
+
+    def test_authorized_can_comment(self):
+        """Доступ к комментам есть только у авторизированного"""
+        
