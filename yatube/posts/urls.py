@@ -29,7 +29,4 @@ urlpatterns = [
         views.profile_unfollow,
         name="profile_unfollow"
     )
-
-    (
-        ),
 ]

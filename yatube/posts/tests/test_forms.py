@@ -150,8 +150,7 @@ class PostFormTests(TestCase):
         response = self.authorized_client.post(
             reverse('add_comment',
                     kwargs={'username': PostFormTests.user.username,
-                            'post_id': pk}
-                   ),
+                            'post_id': pk}),
             data=form_data,
             follow=True
         )
@@ -171,8 +170,7 @@ class PostFormTests(TestCase):
         response = self.guest_client.post(
             reverse('add_comment',
                     kwargs={'username': PostFormTests.user.username,
-                            'post_id': pk}
-                   ),
+                            'post_id': pk}),
             data=form_data,
             follow=True
         )
