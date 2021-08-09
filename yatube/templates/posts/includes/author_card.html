@@ -5,9 +5,26 @@
       <h3>{{ user_post.first_name }} {{ user_post.last_name }}</h3>
     </div>
     <div class="card-body">
-      Подписчиков: XXX <br>
-      Подписан: XXX <br>
+      Подписчиков: {{ follower }} <br>
+      Подписан: {{ follow }} <br>
       Публикаций: {{ post_count }}
     </div>
   </div>
+  {% if user_post != user %}
+    <li class="list-group-item">
+      {% if following %}
+        <a
+          class="btn btn-lg btn-light"
+          href="{% url 'profile_unfollow' user_post.username %}" role="button">
+          Отписаться
+        </a>
+      {% else %}
+        <a
+          class="btn btn-lg btn-primary"
+          href="{% url 'profile_follow' user_post.username %}" role="button">
+          Подписаться 
+        </a>
+      {% endif %}
+    </li>
+  {% endif %}
 </div>

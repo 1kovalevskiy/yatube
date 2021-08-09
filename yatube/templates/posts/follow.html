@@ -4,10 +4,10 @@
 Последние обновления на сайте
 {% endblock %}
 {% block content %}
-  {% include "posts/includes/menu.html" with index=True %}
+  {% include "posts/includes/menu.html" with follow=True %}
   {% for post in page %}
     {% include 'posts/includes/post_card.html' %}
   {% endfor %}
   {% include "posts/includes/paginator.html" %}
   
-{% endblock %} 
+{% endblock %}
