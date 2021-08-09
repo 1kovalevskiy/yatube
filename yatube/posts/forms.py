@@ -20,7 +20,7 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["text",]
+        fields = ["text", ]
         help_texts = {
             "text": "Здесь должен быть текст поста",
         }

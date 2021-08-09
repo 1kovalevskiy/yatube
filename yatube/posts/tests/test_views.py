@@ -94,7 +94,7 @@ class PostPageTests(TestCase):
             reverse('group_posts', args=[PostPageTests.group1.slug]),
             reverse('profile', args=[PostPageTests.user.username]),
         ]
-    
+
     @classmethod
     def tearDownClass(cls):
         # Модуль shutil - библиотека Python с прекрасными инструментами
@@ -158,9 +158,9 @@ class PostPageTests(TestCase):
                 self.assertEqual(post_text_0, 'text12')
                 self.assertEqual(post_author_0, PostPageTests.user)
                 self.assertEqual(post_group_0, PostPageTests.group1)
-                self.assertEqual(post_image_0, 
-                    Post.objects.get(id=pk).image
-                )
+                self.assertEqual(post_image_0,
+                                 Post.objects.get(id=pk).image
+                                )
 
     def test_page_with_form_show_correct_context(self):
         """Шаблоны с формами сформированы с правильным контекстом."""
@@ -191,9 +191,9 @@ class PostPageTests(TestCase):
         self.assertEqual(post_text_0, 'text12')
         self.assertEqual(post_author_0, PostPageTests.user)
         self.assertEqual(post_group_0, PostPageTests.group1)
-        self.assertEqual(post_image_0, 
-            Post.objects.get(id=pk).image
-        )
+        self.assertEqual(post_image_0,
+                         Post.objects.get(id=pk).image
+                        )
 
     def test_create_new_post_and_show_in_group1(self):
         """Запись создалась и отображается в группе 1"""
@@ -229,7 +229,6 @@ class PostPageTests(TestCase):
         self.assertEqual(objects.paginator.count, 0)
 
     def test_index_cache(self):
-        post_count = Post.objects.all().count()
         Post.objects.create(
             text='new-post-with-cache',
             author=PostPageTests.user,
@@ -277,8 +276,8 @@ class PostPageTests(TestCase):
         post1_count_before = len(responce1.context['page'])
         post2_count_before = len(responce2.context['page'])
         Post.objects.create(
-            author = PostPageTests.user3,
-            text = 'text_user_3',
+            author=PostPageTests.user3,
+            text='text_user_3',
         )
         responce1 = self.authorized_client.get(
             reverse('follow_index')
@@ -290,7 +289,3 @@ class PostPageTests(TestCase):
         post2_count_after = len(responce2.context['page'])
         self.assertEqual(post1_count_after, post1_count_before + 1)
         self.assertEqual(post2_count_after, post2_count_before)
-
-
-
-        

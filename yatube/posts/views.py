@@ -78,7 +78,7 @@ def post_view(request, username, post_id):
         comment.post = post
         comment.save()
         return redirect("post", username=username, post_id=post_id)
-    
+
     comments = post.comments.all()
     content = {
         "user_post": user,
@@ -117,30 +117,34 @@ def post_edit(request, username, post_id):
     post = get_object_or_404(Post, author__username=username, pk=post_id)
     if request.user != post.author:
         return redirect("/")
-    form = PostForm(request.POST or None, files=request.FILES or None, instance=post)
+    form = PostForm(request.POST or None,
+                    files=request.FILES or None,
+                    instance=post
+                   )
     if form.is_valid():
         form.save()
         return redirect("post", username=username, post_id=post_id)
     return render(request, "posts/post_edit.html", {"form": form})
 
+
 def page_not_found(request, exception):
-    # Переменная exception содержит отладочную информацию, 
+    # Переменная exception содержит отладочную информацию,
     # выводить её в шаблон пользователской страницы 404 мы не станем
     return render(
-        request, 
-        "misc/404.html", 
-        {"path": request.path}, 
+        request,
+        "misc/404.html",
+        {"path": request.path},
         status=404
     )
 
 
 def server_error(request):
-    return render(request, "misc/500.html", status=500) 
+    return render(request, "misc/500.html", status=500)
+
 
 @login_required
 def add_comment(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author__username=username)
-    user = post.author
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -149,6 +153,7 @@ def add_comment(request, username, post_id):
         comment.save()
         return redirect("post", username=username, post_id=post_id)
     return render(request, "posts/add_comment.html", {"form": form})
+
 
 @login_required
 def follow_index(request):
@@ -160,9 +165,10 @@ def follow_index(request):
     else:
         page = []
     return render(request,
-                    'posts/follow.html',
-                    {'page': page, }
-                    )
+                  'posts/follow.html',
+                  {'page': page, }
+                 )
+
 
 @login_required
 def profile_follow(request, username):
@@ -186,4 +192,4 @@ def profile_unfollow(request, username):
         author=user,
     )
     follow.delete()
-    return redirect("profile", username=username) 
+    return redirect("profile", username=username)
