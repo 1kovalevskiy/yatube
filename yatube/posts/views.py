@@ -9,6 +9,7 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+
 @cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.all()
@@ -119,8 +120,7 @@ def post_edit(request, username, post_id):
         return redirect("/")
     form = PostForm(request.POST or None,
                     files=request.FILES or None,
-                    instance=post
-                   )
+                    instance=post)
     if form.is_valid():
         form.save()
         return redirect("post", username=username, post_id=post_id)
@@ -166,8 +166,7 @@ def follow_index(request):
         page = []
     return render(request,
                   'posts/follow.html',
-                  {'page': page, }
-                 )
+                  {'page': page, })
 
 
 @login_required

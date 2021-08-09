@@ -159,8 +159,7 @@ class PostPageTests(TestCase):
                 self.assertEqual(post_author_0, PostPageTests.user)
                 self.assertEqual(post_group_0, PostPageTests.group1)
                 self.assertEqual(post_image_0,
-                                 Post.objects.get(id=pk).image
-                                )
+                                 Post.objects.get(id=pk).image)
 
     def test_page_with_form_show_correct_context(self):
         """Шаблоны с формами сформированы с правильным контекстом."""
@@ -192,8 +191,7 @@ class PostPageTests(TestCase):
         self.assertEqual(post_author_0, PostPageTests.user)
         self.assertEqual(post_group_0, PostPageTests.group1)
         self.assertEqual(post_image_0,
-                         Post.objects.get(id=pk).image
-                        )
+                         Post.objects.get(id=pk).image)
 
     def test_create_new_post_and_show_in_group1(self):
         """Запись создалась и отображается в группе 1"""
