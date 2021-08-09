@@ -85,7 +85,7 @@ class PostFormTests(TestCase):
             Post.objects.filter(
                 text='Тестовый текст',
                 author=PostFormTests.user,
-                image='tasks/small.gif'
+                image='posts/small.gif'
             ).exists()
         )
 
@@ -121,7 +121,7 @@ class PostFormTests(TestCase):
             ).exists()
         )
 
-    def test_create_new_post(self):
+    def test_guest_create_new_post(self):
         """Гость не может создать запись в Post."""
         # Подсчитаем количество записей в Task
         posts_count = Post.objects.count()
@@ -140,3 +140,44 @@ class PostFormTests(TestCase):
         self.assertRedirects(response, '/auth/login/?next=/new/')
         # Проверяем, увеличилось ли число постов
         self.assertEqual(Post.objects.count(), posts_count)
+
+    def test_authorized_can_comment(self):
+        """Доступ к комментам есть только у авторизированного"""
+        pk = Post.objects.get(text='text').pk
+        form_data = {
+            'text': 'comment',
+        }
+        response = self.authorized_client.post(
+            reverse('add_comment',
+            kwargs={
+                'username': PostFormTests.user.username,
+                'post_id': pk
+            }),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(response, reverse('post', kwargs={
+                             'username': PostFormTests.user.username,
+                             'post_id': pk
+                             }))
+        comment_count = PostFormTests.user.comments.count()
+        self.assertEqual(comment_count, 1)
+
+    def test_guest_can_comment(self):
+        """Гость не имеет доступа к комментам"""
+        pk = Post.objects.get(text='text').pk
+        form_data = {
+            'text': 'comment',
+        }
+        response = self.guest_client.post(
+            reverse('add_comment',
+            kwargs={
+                'username': PostFormTests.user.username,
+                'post_id': pk
+            }),
+            data=form_data,
+            follow=True
+        )
+        self.assertRedirects(response, '/auth/login/?next=/TestUser/1/comment')
+        comment_count = PostFormTests.user.comments.count()
+        self.assertEqual(comment_count, 0)

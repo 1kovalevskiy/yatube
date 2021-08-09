@@ -291,6 +291,6 @@ class PostPageTests(TestCase):
         self.assertEqual(post1_count_after, post1_count_before + 1)
         self.assertEqual(post2_count_after, post2_count_before)
 
-    def test_authorized_can_comment(self):
-        """Доступ к комментам есть только у авторизированного"""
+
+
         

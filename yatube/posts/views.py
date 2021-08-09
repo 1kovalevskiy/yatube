@@ -48,7 +48,6 @@ def profile(request, username):
     follower = Follow.objects.filter(user__username=username).count()
     follow = Follow.objects.filter(user__username=username).count()
     following = False
-    page_user = request.user
     if request.user.is_authenticated:
         if Follow.objects.filter(
             user=request.user,
@@ -70,7 +69,8 @@ def post_view(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author__username=username)
     user = post.author
     post_count = user.posts.count()
-
+    follower = Follow.objects.filter(user__username=username).count()
+    follow = Follow.objects.filter(user__username=username).count()
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -86,7 +86,8 @@ def post_view(request, username, post_id):
         "post_count": post_count,
         "form": form,
         "comments": comments,
-        # "comments_page": comments_page
+        "follower": follower,
+        "follow": follow,
     }
     return render(request, 'posts/post.html', content)
 
