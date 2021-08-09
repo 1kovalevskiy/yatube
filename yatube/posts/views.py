@@ -124,7 +124,10 @@ def post_edit(request, username, post_id):
     if form.is_valid():
         form.save()
         return redirect("post", username=username, post_id=post_id)
-    return render(request, "posts/post_edit.html", {"form": form})
+    return render(
+        request, "posts/post_edit.html",
+        {"form": form, "post": post}
+    )
 
 
 def page_not_found(request, exception):
