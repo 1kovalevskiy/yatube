@@ -1,21 +1,26 @@
-from .forms import CommentForm, PostForm
-from django.shortcuts import render, get_object_or_404, redirect
-from django.core.paginator import Paginator
-from .models import Group, Post, Follow
-from django.contrib.auth.decorators import login_required
-from django.views.decorators.cache import cache_page
-from django.core.cache import cache
 from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.core.paginator import Paginator
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.cache import cache_page
+
+from .forms import CommentForm, PostForm
+from .models import Follow, Group, Post
 
 User = get_user_model()
+
+
+def paginator(request, lst):
+    paginator = Paginator(lst, 10)
+    page_number = request.GET.get('page')
+    return paginator.get_page(page_number)
 
 
 @cache_page(20, key_prefix='index_page')
 def index(request):
     post_list = Post.objects.all()
-    paginator = Paginator(post_list, 10)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+    page = paginator(request, post_list)
     return render(request,
                   'posts/index.html',
                   {'page': page, }
@@ -25,29 +30,20 @@ def index(request):
 def group_posts(request, slug):
     group = get_object_or_404(Group, slug=slug)
     post_list = group.posts.all()
-    paginator = Paginator(post_list, 10)
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
+    page = paginator(request, post_list)
     return render(request, "posts/group.html", {"group": group, "page": page})
 
 
 def group_list(request):
     groups = Group.objects.all()
-    paginator = Paginator(groups, 10)
-    page_number = request.GET.get('page')
-    groups = paginator.get_page(page_number)
+    groups = paginator(request, groups)
     return render(request, "posts/groups_list.html", {"groups": groups})
 
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
     post_list = user.posts.all()
-    paginator = Paginator(post_list, 10)
-    post_count = paginator.count
-    page_number = request.GET.get('page')
-    page = paginator.get_page(page_number)
-    follower = Follow.objects.filter(user__username=username).count()
-    follow = Follow.objects.filter(user__username=username).count()
+    page = paginator(request, post_list)
     following = False
     if request.user.is_authenticated:
         if Follow.objects.filter(
@@ -58,10 +54,7 @@ def profile(request, username):
     content = {
         "user_post": user,
         "page": page,
-        "post_count": post_count,
         "following": following,
-        "follower": follower,
-        "follow": follow,
     }
     return render(request, 'posts/profile.html', content)
 
@@ -69,9 +62,6 @@ def profile(request, username):
 def post_view(request, username, post_id):
     post = get_object_or_404(Post, pk=post_id, author__username=username)
     user = post.author
-    post_count = user.posts.count()
-    follower = Follow.objects.filter(user__username=username).count()
-    follow = Follow.objects.filter(user__username=username).count()
     form = CommentForm(request.POST or None)
     if form.is_valid():
         comment = form.save(commit=False)
@@ -84,11 +74,8 @@ def post_view(request, username, post_id):
     content = {
         "user_post": user,
         "post": post,
-        "post_count": post_count,
         "form": form,
         "comments": comments,
-        "follower": follower,
-        "follow": follow,
     }
     return render(request, 'posts/post.html', content)
 
@@ -160,13 +147,8 @@ def add_comment(request, username, post_id):
 
 @login_required
 def follow_index(request):
-    if Follow.objects.filter(user=request.user).exists():
-        post_list = Post.objects.filter(author__following__user=request.user)
-        paginator = Paginator(post_list, 10)
-        page_number = request.GET.get('page')
-        page = paginator.get_page(page_number)
-    else:
-        page = []
+    post_list = Post.objects.filter(author__following__user=request.user)
+    page = paginator(request, post_list)
     return render(request,
                   'posts/follow.html',
                   {'page': page, })

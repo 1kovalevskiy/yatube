@@ -6,7 +6,7 @@
 
   {% for group in groups %}
     <h3>
-      <a href="{{ group.slug }}">{{ group.title }}</a>
+      <a href="{% url 'group_posts' slug=group.slug %}">{{ group.title }}</a>
     </h3>
 
   {% endfor %}

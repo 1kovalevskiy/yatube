@@ -5,9 +5,9 @@
       <h3>{{ user_post.first_name }} {{ user_post.last_name }}</h3>
     </div>
     <div class="card-body">
-      Подписчиков: {{ follower }} <br>
-      Подписан: {{ follow }} <br>
-      Публикаций: {{ post_count }}
+      Подписчиков: {{ user_post.follower.count }} <br>
+      Подписан: {{ user_post.following.count }} <br>
+      Публикаций: {{ user_post.posts.count }}
     </div>
   </div>
   {% if user_post != user %}

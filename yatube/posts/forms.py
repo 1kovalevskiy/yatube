@@ -5,7 +5,7 @@ from .models import Comment, Post
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ["text", "group", "image"]
+        fields = ("text", "group", "image")
         help_texts = {
             "text": "Здесь должен быть текст поста",
             "group": "А здесь можно выбрать группу для опубликования",
@@ -21,7 +21,7 @@ class PostForm(forms.ModelForm):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        fields = ["text", ]
+        fields = ("text", )
         help_texts = {
             "text": "Здесь должен быть текст поста",
         }

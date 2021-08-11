@@ -1,24 +1,28 @@
 import shutil
-import tempfile
 
-from django.conf import settings
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import Client, TestCase
+from django.test import Client, TestCase, override_settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
 
 from posts.forms import PostForm
 from posts.models import Group, Post
+import os
 
 
 User = get_user_model()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(
+    os.path.abspath(__file__))))
+
+TESTMEDIA = os.path.join(BASE_DIR, "testmedia")
 
 
 class PostFormTests(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        settings.MEDIA_ROOT = tempfile.mkdtemp(dir=settings.BASE_DIR)
+        # settings.MEDIA_ROOT = TESTMEDIA
 
         cls.group = Group.objects.create(
             title='title',
@@ -40,7 +44,7 @@ class PostFormTests(TestCase):
         # для управления файлами и директориями:
         # создание, удаление, копирование, перемещение, изменение папок|файлов
         # Метод shutil.rmtree удаляет директорию и всё её содержимое
-        shutil.rmtree(settings.MEDIA_ROOT, ignore_errors=True)
+        shutil.rmtree(TESTMEDIA, ignore_errors=True)
         super().tearDownClass()
 
     def setUp(self):
@@ -48,6 +52,7 @@ class PostFormTests(TestCase):
         self.authorized_client = Client()
         self.authorized_client.force_login(PostFormTests.user)
 
+    @override_settings(MEDIA_ROOT=TESTMEDIA)
     def test_create_new_post(self):
         """Валидная форма создает запись в Post."""
         # Подсчитаем количество записей в Task

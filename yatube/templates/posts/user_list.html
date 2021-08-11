@@ -6,7 +6,7 @@
 
   {% for user in users %}
     <h3>
-      <a href="/{{ user.username }}">{{ user.first_name }} {{ user.last_name }} (@{{ user.username }})</a>
+      <a href="{% url 'profile' username=user.username %}">{{ user.first_name }} {{ user.last_name }} (@{{ user.username }})</a>
     </h3>
 
   {% endfor %}

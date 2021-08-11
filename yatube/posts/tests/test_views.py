@@ -10,6 +10,8 @@ from django.urls import reverse
 from django import forms
 from django.core.cache import cache
 
+from http import HTTPStatus
+
 from time import sleep
 
 from posts.models import Group, Post, Follow
@@ -240,39 +242,61 @@ class PostPageTests(TestCase):
         page = response.content.decode()
         self.assertIn('new-post-with-cache', page)
 
-    def test_follow_unfollow_system(self):
+    def test_follow_system(self):
         """Система подписок работает корректно"""
         follow_count_before = Follow.objects.filter(
             user=PostPageTests.user
         ).count()
-        self.authorized_client.get(
+        response = self.authorized_client.get(
             reverse('profile_follow', args=[PostPageTests.user2.username])
         )
         follow_count_after = Follow.objects.filter(
             user=PostPageTests.user
         ).count()
+        follow_record = Follow.objects.last()
         self.assertEqual(follow_count_before + 1, follow_count_after)
-        self.authorized_client.get(
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(
+            response,
+            reverse('profile', args=[PostPageTests.user2])
+        )
+        self.assertEqual(follow_record.user, PostPageTests.user)
+        self.assertEqual(follow_record.author, PostPageTests.user2)
+
+    def test_unfollow_system(self):
+        """Система отписок работает корректно"""
+        Follow.objects.create(
+            user=PostPageTests.user,
+            author=PostPageTests.user2
+        )
+        unfollow_count_before = Follow.objects.filter(
+            user=PostPageTests.user
+        ).count()
+        response = self.authorized_client.get(
             reverse('profile_unfollow', args=[PostPageTests.user2.username])
         )
         unfollow_count_after = Follow.objects.filter(
             user=PostPageTests.user
         ).count()
-        self.assertEqual(follow_count_before, unfollow_count_after)
+        self.assertEqual(unfollow_count_before, unfollow_count_after + 1)
+        self.assertEqual(response.status_code, HTTPStatus.FOUND)
+        self.assertRedirects(
+            response,
+            reverse('profile', args=[PostPageTests.user2])
+        )
+        self.assertFalse(
+            Follow.objects.filter(
+                user=PostPageTests.user,
+                author=PostPageTests.user2
+            ).exists()
+        )
 
     def test_follow_page(self):
         """Страница с подписками отображается корректно"""
-        self.authorized_client.get(
-            reverse('profile_follow', args=[PostPageTests.user3.username])
+        Follow.objects.create(
+            user=PostPageTests.user,
+            author=PostPageTests.user3
         )
-        responce1 = self.authorized_client.get(
-            reverse('follow_index')
-        )
-        responce2 = self.authorized_client2.get(
-            reverse('follow_index')
-        )
-        post1_count_before = len(responce1.context['page'])
-        post2_count_before = len(responce2.context['page'])
         Post.objects.create(
             author=PostPageTests.user3,
             text='text_user_3',
@@ -285,5 +309,9 @@ class PostPageTests(TestCase):
         )
         post1_count_after = len(responce1.context['page'])
         post2_count_after = len(responce2.context['page'])
-        self.assertEqual(post1_count_after, post1_count_before + 1)
-        self.assertEqual(post2_count_after, post2_count_before)
+        self.assertEqual(post1_count_after, 1)
+        self.assertEqual(post2_count_after, 0)
+        self.assertEqual(
+            responce1.context['page'][0].text,
+            'text_user_3'
+        )
