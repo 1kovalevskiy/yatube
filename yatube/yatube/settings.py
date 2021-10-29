@@ -26,6 +26,8 @@ SECRET_KEY = '9o169ht%559!!kb@50j6055yt)m0si^8$)$fy3@tq)s4@25_h5'
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    "http://1kovalevskiy.pythonanywhere.com",
+    "www.http://1kovalevskiy.pythonanywhere.com",
     "localhost",
     "127.0.0.1",
     "[::1]",
@@ -36,6 +38,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'django.contrib.staticfiles',
     'users',
     'about',
     'posts',
@@ -44,7 +47,6 @@ INSTALLED_APPS = [
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
-    'django.contrib.staticfiles',
     'sorl.thumbnail',
     'debug_toolbar',
 ]
