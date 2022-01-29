@@ -31,8 +31,14 @@ services:
       - static_value:/code/static/
     env_file:
       - ./.env
-    entrypoint: >
-      sh -c ". ./entrypoint.sh"
+    command: bash -c "
+      python manage.py collectstatic --noinput &&
+      python manage.py migrate --noinput &&
+      python manage.py loaddata dump.json &&
+      gunicorn yatube.wsgi:application --bind 0.0.0.0:8000
+      "
+
+
   nginx:
     image: nginx:1.19.3
 
