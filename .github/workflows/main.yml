@@ -83,8 +83,8 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }} # Если ваш ssh-ключ защищён фразой-паролем
         script: |
-          git clone https://github.com/1kovalevskiy/YaTube.git
-          cd /home/ubuntu/YaTube
+          git clone https://github.com/1kovalevskiy/yatube.git
+          cd /home/ubuntu/yatube
           git pull
           sudo docker stop $(sudo docker ps -a -q)
           sudo docker-compose rm 1kovalevskiy/yatube:latest
