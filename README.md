@@ -15,7 +15,7 @@
 
 ## Технологии
 - Приложение на Django
-- Тестирование на "Pytest + pytest-django"
+- Тестирование на "Pytest"
 - БД PostgreSQL
 - Proxy Nginx
 - Контейнеризация с помощью Docker
