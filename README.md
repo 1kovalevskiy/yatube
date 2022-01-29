@@ -1,5 +1,5 @@
 # Сервис Yatube
-![yatube](https://github. com/1kovalevskiy/yatube/actions/workflows/main.yml/badge.svg)
+![yatube](https://github.com/1kovalevskiy/yatube/actions/workflows/main.yml/badge.svg)
 ![coverage](https://github.com/1kovalevskiy/yatube/blob/master/coverage.svg)
 
 Учебный сервис "Yatube" Личные блоги
