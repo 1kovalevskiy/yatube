@@ -2,7 +2,7 @@
 ![yatube](https://github.com/1kovalevskiy/yatube/actions/workflows/main.yml/badge.svg)
 ![coverage](https://github.com/1kovalevskiy/yatube/blob/master/coverage.svg)
 
-Учебный сервис "Yatube" Личные блоги
+## Учебный сервис "Yatube" Личные блоги
 Это проект, на котором можно создать свою страницу.
 Если на нее зайти, то можно посмотреть все записи автора.
 Пользователи могут заходить на чужие страницы, подписываться на авторов и комментировать их записи.
