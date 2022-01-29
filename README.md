@@ -1,7 +1,21 @@
-# hw05_final
+# Сервис Yatube
+![yatube](https://github. com/1kovalevskiy/yatube/actions/workflows/main.yml/badge.svg)
+![coverage](https://github.com/1kovalevskiy/yatube/blob/master/coverage.svg)
 
-[![CI](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml/badge.svg?branch=master)](https://github.com/yandex-praktikum/hw05_final/actions/workflows/python-app.yml)
+Учебный сервис "Yatube" Личные блоги
 
-Необходимо разработать социальную сеть для публикации личных дневников.
-Это будет сайт, на котором можно создать свою страницу. Если на нее зайти, то можно посмотреть все записи автора.
-Пользователи смогут заходить на чужие страницы, подписываться на авторов и комментировать их записи.
+
+## Deploy
+В корневой папке 
+- Создать файл `.env` по примеру файла `.env.sample`
+- Запустить `docker-compose up -d`
+
+## Тестовый сервер
+[Тестовый сервер (не работает)](http://yatube.kovalevskiy.xyz)http://yatube.kovalevskiy.xyz
+
+## Технологии
+- Приложение на Django
+- Тестирование на "Pytest + pytest-django"
+- БД PostgreSQL
+- Proxy Nginx
+- Контейнеризация с помощью Docker
