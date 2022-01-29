@@ -65,7 +65,6 @@ jobs:
       - uses: actions/checkout@master
       - name: Build django
         run: |
-          cd backend/
           docker build -t 1kovalevskiy/yatube:latest -f Dockerfile .
       - name: Push django to docker.io
         run: docker push 1kovalevskiy/yatube:latest
