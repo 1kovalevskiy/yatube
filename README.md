@@ -15,7 +15,7 @@
 - Запустить `docker-compose up -d`
 
 ## Тестовый сервер
-[Тестовый сервер (не работает)](http://yatube.kovalevskiy.xyz)http://yatube.kovalevskiy.xyz
+[Тестовый сервер ](http://yatube.kovalevskiy.xyz)http://yatube.kovalevskiy.xyz
 
 ## Технологии
 - Приложение на Django
